@@ -1,8 +1,9 @@
 <div class="todo-item d-flex justify-content-between align-items-center" (mouseover)="isHovered = true"
   (mouseout)="isHovered=false">
   <div class="todo">
-    <input type="checkbox" name="" id="" class="toggle text-center">
-    <label for="">Todo item</label>
+    <input type="checkbox" [id]="todo.id" [ngClass]="{'checked': todo.isCompleted}" [checked]="todo.isCompleted"
+      (change)="changeTodoStatus()" class="toggle text-center">
+    <label [for]="todo.id">{{todo.content}}</label>
   </div>
   <div class="d-flex align-items-center gap-xl-1">
     <span class="icon-wrapper text-center edit" [ngClass]="{'active': isHovered}">

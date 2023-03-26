@@ -1,3 +1,5 @@
+import { Observable, map } from 'rxjs';
+import { TodoService } from './services/todo.service';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 
 @Component({
@@ -5,4 +7,11 @@ import { Component, TemplateRef, ViewChild } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {}
+export class AppComponent {
+  hasTodo$!: Observable<boolean>;
+  constructor(private todoService: TodoService) {}
+  ngOnInit() {
+    this.todoService.fetchFromLocalStorage();
+    this.hasTodo$ = this.todoService.length$.pipe(map((length) => length > 0));
+  }
+}

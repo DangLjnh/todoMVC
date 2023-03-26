@@ -1,5 +1,5 @@
 .todo-item {
-  min-height: 50px;
+  // min-height: 50px;
   padding: 0 5px;
   border-top: rgba(0, 0, 0, 0.1);
   position: relative;
@@ -61,15 +61,18 @@
   }
   .edit-form {
     position: absolute;
-    width: 98.5%;
-    height: 100px;
+    width: 80%;
+    height: 100%;
     background-color: white;
+    left: 60px;
+    // margin: 15px 15px 15px 60px;
     input {
-      height: 92%;
+      display: block;
+      height: 100%;
       width: 92%;
-      margin-left: 35px;
       font-size: 18px;
       padding-left: 10px;
+      margin: 0 !important;
     }
   }
 }

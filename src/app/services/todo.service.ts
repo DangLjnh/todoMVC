@@ -11,7 +11,7 @@ export class TodoService {
   private static readonly TodoStorageKey = 'todos';
 
   private todos!: Todo[];
-  private filteredTodo!: Todo[];
+  private filteredTodo: Todo[] = [];
   private lengthSubject: BehaviorSubject<number> = new BehaviorSubject<number>(
     0
   );
@@ -24,10 +24,12 @@ export class TodoService {
   length$: Observable<number> = this.lengthSubject.asObservable();
 
   constructor(private storageService: LocalStorageService) {}
+
   fetchFromLocalStorage() {
     this.todos =
       this.storageService.getValue<Todo[]>(TodoService.TodoStorageKey) || [];
-    this.filteredTodo = [...this.todos.map((todo) => ({ ...todo }))]; //clone deep todos
+    this.filteredTodo = [...this.todos.map((todo) => ({ ...todo }))];
+    // this.filteredTodo = [...this.todos.map((todo) => ({ ...todo }))]; //clone deep todos
     this.updateTodoData();
   }
 
@@ -37,6 +39,13 @@ export class TodoService {
     this.filterTodo(this.currentFilter, false); // filter todo in update will be change filter in fetch
     // After filterTodo change -> update stream
     this.updateTodoData();
+  }
+
+  addTodo(content: string) {
+    const date = new Date(Date.now()).getTime();
+    const newTodo = new Todo(date, content);
+    this.todos.unshift(newTodo);
+    this.updateToLocalStorage();
   }
 
   filterTodo(filter: Filter, isFiltering: boolean = true) {
@@ -60,7 +69,17 @@ export class TodoService {
     if (isFiltering) this.updateToLocalStorage();
   }
 
+  changeTodoStatus(id: number, isCompleted: boolean) {
+    const index = this.todos.findIndex((todo) => todo.id === id);
+    const todo = this.todos[index];
+    todo.isCompleted = isCompleted;
+    // delete old todo -> add new todo after update isCompleted
+    this.todos.splice(index, 1, todo);
+    this.updateToLocalStorage();
+  }
+
   private updateTodoData() {
+    this.filteredTodo = this.todos;
     this.displayTodoSubject.next(this.filteredTodo);
     this.lengthSubject.next(this.todos.length);
   }
