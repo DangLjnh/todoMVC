@@ -28,7 +28,7 @@ export class TodoService {
   fetchFromLocalStorage() {
     this.todos =
       this.storageService.getValue<Todo[]>(TodoService.TodoStorageKey) || [];
-    this.filteredTodo = [...this.todos.map((todo) => ({ ...todo }))];
+    this.filteredTodo = [...this.todos];
     // this.filteredTodo = [...this.todos.map((todo) => ({ ...todo }))]; //clone deep todos
     this.updateTodoData();
   }
@@ -60,13 +60,13 @@ export class TodoService {
       case Filter.Completed:
         this.filteredTodo = this.todos.filter((todo) => todo.isCompleted);
         break;
-      case Filter.Completed:
-        this.filteredTodo = [...this.todos.map((todo) => ({ ...todo }))];
+      case Filter.All:
+        this.filteredTodo = [...this.todos];
         break;
       default:
         break;
     }
-    if (isFiltering) this.updateToLocalStorage();
+    if (isFiltering) this.updateTodoData();
   }
 
   changeTodoStatus(id: number, isCompleted: boolean) {
@@ -92,8 +92,24 @@ export class TodoService {
     this.updateToLocalStorage();
   }
 
+  toggleAll() {
+    this.todos = this.todos.map((todo) => {
+      return {
+        ...todo,
+        // 1 true 1 false -> true
+        isCompleted: !this.todos.every((t) => t.isCompleted),
+      };
+    });
+    this.updateToLocalStorage();
+  }
+
+  clearCompleted() {
+    // todo.isCompleted === false
+    this.todos = this.todos.filter((todo) => !todo.isCompleted);
+    this.updateToLocalStorage();
+  }
+
   private updateTodoData() {
-    this.filteredTodo = this.todos;
     this.displayTodoSubject.next(this.filteredTodo);
     this.lengthSubject.next(this.todos.length);
   }

@@ -4,12 +4,14 @@
     <p class="items-count">{{length}} item{{length>1?'s':''}}</p>
     <div>
       <button type="button" class="filter-btn" *ngFor="let filterButton of filterButtons"
-        [ngClass]="{'active':filterButton.isActive}">
+        [ngClass]="{'active':filterButton.isActive}" (click)="filterBtn(filterButton.type)">
         {{filterButton.label}}
       </button>
     </div>
     <div>
-      <button class="filter-btn clear-completed-btn">Clear completed</button>
+      <button class="filter-btn clear-completed-btn" (click)="clearCompleted()"
+        [ngClass]="{'visible':hasCompleted$|async}">Clear
+        completed</button>
     </div>
   </div>
 </div>
